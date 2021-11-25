@@ -2,7 +2,7 @@ import _axios from 'axios'
 import config from '@/config/config'
 import { ElMessage } from 'element-plus'
 import { getToken, setToken } from '@/common/utils/TokenUtil'
-import router from '@/router'
+import router,{ LOGIN_PAGE_NAME } from '@/router'
 
 const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
 class HttpRequest {
@@ -53,7 +53,8 @@ class HttpRequest {
                     duration: 4000
                 });
                 setToken("", 0);
-                router.replace({ name: 'login' });
+                console.log(router)
+                router.replace({ name: LOGIN_PAGE_NAME });
             }
             return Promise.reject(data)
         })

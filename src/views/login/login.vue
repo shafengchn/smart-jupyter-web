@@ -22,7 +22,7 @@
 
 <script>
 /* eslint-disable */
-import { login } from "@/api/login/login";
+import { login } from "@/api/user/login";
 import { setToken } from "@/common/utils/TokenUtil";
 
 export default {
@@ -48,8 +48,8 @@ export default {
 					login({ username: this.formItem.account, password: this.formItem.password }).before(()=>{
 						this.logining = false;
 					}).then(res=>{
-						setToken(res.access_token);
-						this.$router.replace({ name: this.$config.homeName })
+						setToken(res.access_token, res.expires_in);
+						window.location.reload();
 					}).catch(err=>{
 						console.error("error: ",err)
 					})
