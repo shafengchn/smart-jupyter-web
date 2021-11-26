@@ -14,4 +14,13 @@ body {
   padding: 0;
   margin: 0;
 }
+
+.__flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.__flex-row {
+  flex-direction: row;
+}
 </style>

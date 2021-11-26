@@ -7,7 +7,7 @@ export const getToken = () => {
     return Cookies.get(TokenKey);
 }
 
-export const setToken = token => {
+export const setToken = (token, expires = expires) => {
     if(!token || token.length == 0) {
         Cookies.remove(TokenKey);
     } else {

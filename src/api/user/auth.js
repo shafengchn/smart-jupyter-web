@@ -1,5 +1,9 @@
 import axios from "@/libs/axios";
 
+/**
+ * 用户登录（明文）
+ * @param {用户名密码} param0 
+ */
 export const login = ({ username, password }) => {
     return axios.request({
         url: '/oauth/token',
@@ -12,6 +16,13 @@ export const login = ({ username, password }) => {
             username: 'dfyj',
             password: '123456789'
         },
-        method: 'post'
+        method: 'POST'
     })
+}
+
+export const logout = () => {
+    return axios.request({
+        url: '/user/logout',
+        method: 'POST',
+    });
 }

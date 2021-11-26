@@ -22,7 +22,7 @@
 
 <script>
 /* eslint-disable */
-import { login } from "@/api/user/login";
+import { login } from "@/api/user/auth";
 import { setToken } from "@/common/utils/TokenUtil";
 
 export default {

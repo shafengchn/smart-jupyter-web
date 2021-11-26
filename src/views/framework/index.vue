@@ -36,19 +36,21 @@
 
 		<el-container>
 			<el-header style="text-align: right; font-size: 12px">
-				<el-dropdown>
-					<el-icon style="margin-right: 15px">
-						<i-user-filled />
-					</el-icon>
+				<el-dropdown @command="clickItem">
+					<div class="__flex-center __flex-row">
+						<el-icon>
+							<i-user-filled />
+						</el-icon>
+						{{$store.getters.userInfo.name}}
+					</div>
+					
 					<template #dropdown>
 						<el-dropdown-menu>
-						<el-dropdown-item>View</el-dropdown-item>
-						<el-dropdown-item>Add</el-dropdown-item>
-						<el-dropdown-item>Delete</el-dropdown-item>
+							<el-dropdown-item command="changePasswordClick">修改密码</el-dropdown-item>
+							<el-dropdown-item command="logoutClick">退出登录</el-dropdown-item>
 						</el-dropdown-menu>
 					</template>
 				</el-dropdown>
-				<span>Tom</span>
 			</el-header>
 				
 			<el-main>
@@ -59,17 +61,49 @@
 </template>
 
 <script>
-import Render from "@/components/render";
+import { logout } from "@/api/user/auth";
+import { getToken, setToken } from "@/common/utils/TokenUtil";
 
 export default {
-	components: {
-		Render
-	},
 	data() {
 		return {
 			tableData: [],
 		};
 	},
+	methods: {
+		clickItem(command) {
+			if(command == {} && !this[command] && !(this[command] instanceof Function)) {
+				return;
+			}
+			this[command]();
+		},
+		logoutClick() {
+			let that = this;
+			this.$confirm('确认退出登录吗？', {
+				type: 'warning',
+				title: '注销',
+				cancelButtonText: '取消',
+				confirmButtonText: '确认',
+				beforeClose: (action, instance, done) => {
+					if(action == 'confirm') {
+						let token = getToken();
+						if(!token) {
+							return done();
+						}
+						logout(token).then(res=>{
+							setToken("", 0);
+							this.$router.replace({ name: 'login' })
+							done();
+						}).catch(err=>{
+							console.error(err);
+						})
+					} else {
+						done();
+					}
+				}
+			});
+		}
+	}
 };
 </script>
 

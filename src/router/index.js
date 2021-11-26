@@ -4,6 +4,7 @@ import { ElMessage } from 'element-plus';
 import routes from "./routes";
 import store from "@/store/index";
 import { getUserMenu } from "@/api/sys/menu";
+import { getUserInfo } from "@/api/user/user";
 
 export const LOGIN_PAGE_NAME = "login";
 
@@ -39,10 +40,15 @@ router.beforeEach((to, from, next) => {
 				if (res.data.length == 0) {
 					return next({ name: '401' });
 				}
+				// 添加路由信息
 				addRoutes(res.data, router, 'root');
-				// 菜单数据
+				// 保存菜单数据
 				let menus = getMenuList(res.data);
 				store.dispatch('setMenuList', menus);
+				// 开始获取用户信息
+				return getUserInfo();
+			}).then(res=>{
+				store.dispatch('setUserInfo', res.data);
 				next({ ...to, replace: true });
 			}).catch(err => {
 				next({ name: '404' });
