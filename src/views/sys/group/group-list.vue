@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-button size="mini" type="primary" @click="addClick">新增</el-button>
-        <el-button size="mini" type="warning" :icon="$component('i-lock')">角色用户管理</el-button>
+        <el-button size="mini" type="warning" :icon="$component('i-lock')" @click="groupUserClick">角色用户管理</el-button>
         <el-table v-loading="loading" :data="tableData" size="mini" highlight-current-row @row-click="rowClick">
             <el-table-column prop="groupName" label="名称"></el-table-column>
             <el-table-column label="操作" width="120">
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { listGroup } from "@/api/sys/group";
+import { listGroup, saveOrUpdateGroup, removeGroupById } from "@/api/sys/group";
 
 export default {
     data() {
@@ -53,14 +53,16 @@ export default {
             },
             rules: {
                 groupName: [ { require: true, message: '角色名不能为空' } ]
-            }
+            },
+            curRow: null,
         }
     },
     created() {
         this.loadData();
     },
     methods: {
-        rowClick(row, column, e) {
+        rowClick(row) {
+            this.curRow = { ...row };
             this.$emit('click-item', row);
         },
         loadData() {
@@ -84,8 +86,39 @@ export default {
             this.showDialog = true;
         },
         deleteClick(item) {
+            this.$message.info('删除中，请稍候...');
+            removeGroupById(item.id).then(res=>{
+                this.tableData.remove(item);
+                this.$message.success('删除成功');
+            }).catch(err=>{
+                console.error(err);
+            }).finally(()=>{
+            })
         },
-        saveClick() {},
+        saveClick() {
+            this.$refs['formItem'].validate(valid => {
+                if(valid) {
+                    this.saving = true;
+                    saveOrUpdateGroup(this.formItem).before(()=>{
+                        this.saving = false;
+                    }).then(res=>{
+                        this.$message.success('保存成功');
+                        if(this.action == 'add') {
+                            this.tableData.push(res.data);
+                        } else {
+                            this.tableData.replaceByKey("id", res.data.id, res.data);
+                        }
+                        this.showDialog = false;
+                    }).catch(err => {
+                        console.error(err);
+                    })
+                }
+            })
+            
+        },
+        groupUserClick() {
+            this.$emit('click-group-user', this.curRow);
+        }
     }
 }
 </script>

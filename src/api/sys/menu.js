@@ -46,3 +46,14 @@ export const removeMenu = menuId => {
         method: 'DELETE',
     })
 }
+
+/**
+ * 获取树形所有菜单信息
+ * @returns 树形菜单
+ */
+export const treeMenus = () => {
+    return axios.request({
+        url: '/menu/tree',
+        method: 'GET'
+    });
+}
