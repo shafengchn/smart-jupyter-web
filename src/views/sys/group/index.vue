@@ -10,8 +10,8 @@
                 </el-col>
             </el-row>   
         </el-card>
-        <el-dialog v-model="showGroupUser" :title="groupItem.groupName + '用户管理'">
-            <group-user :groupInfo="groupItem"></group-user>
+        <el-dialog v-model="showGroupUser" destroy-on-close :title="groupItem.groupName + '用户管理'">
+            <group-user :isShow="showGroupUser" :groupInfo="groupItem"></group-user>
         </el-dialog>
     </div>
 </template>
@@ -38,11 +38,10 @@ export default {
             this.groupItem = groupItem;
         },
         groupUserClick() {
-            console.log(this.groupItem)
             if(this.groupItem == null || !this.groupItem.id) {
                 return this.$message.warning('请先选择一个角色');
-            }
-            this.showGroupUser = true;
+			}
+			this.showGroupUser = true;
         }
     }
 }

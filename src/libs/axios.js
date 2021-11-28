@@ -55,7 +55,9 @@ class HttpRequest {
                 setToken("", 0);
                 console.log(router)
                 router.replace({ name: LOGIN_PAGE_NAME });
-            }
+            } else {
+				ElMessage.error('服务器连接失败！')
+			}
             return Promise.reject(data)
         })
     }

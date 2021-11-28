@@ -50,9 +50,26 @@ export const saveGroupMenu = (groupId, menuIds = []) => {
     })
 }
 
+/**
+ * 根据用户组的id获取该用户组有权限的菜单id
+ * @param {用户组id} groupId 
+ */
 export const getMenuIdsByGroupId = groupId => {
     return axios.request({
         url: `/group-menu/get-menu-by-group/${groupId}`,
         method: 'GET',
     });
+}
+
+/**
+ * 加入或离开用户组
+ * @param {用户组id} groupId 
+ * @param {用户：是否在此组} relationData 
+ */
+export const joinOrLeaveGroupByUserIds = (groupId, relationData) => {
+	return axios.request({
+		url: `/group-user/join-or-leave-group-by-user-ids/${groupId}`,
+		method: 'POST',
+		data: relationData
+	});
 }
