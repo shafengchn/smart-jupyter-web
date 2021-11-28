@@ -12,7 +12,6 @@ export const getUserInfo = () => {
 
 /**
  * 分页搜索用户
- * @param {用户组id} groupId 
  * @param {分页数据} pageData 
  */
 export const pageUser = (pageData) => {
@@ -33,5 +32,28 @@ export const getUserIdsInGroup = (groupId, userIds) => {
 		url: `/group-user/get-user-ids-in-group/${groupId}`,
 		method: 'POST',
 		data: userIds,
+	});
+}
+
+/**
+ * 保存或更新用户信息
+ * @param {用户信息} userInfo 
+ */
+export const saveOrUpdateUser = userInfo => {
+	return axios.request({
+		url: '/user',
+		method: 'PUT',
+		data: userInfo
+	});
+}
+
+/**
+ * 根据id删除用户
+ * @param {用户id} id 
+ */
+export const removeUserById = id => {
+	return axios.request({
+		url: `/user/${id}`,
+		method: 'DELETE'
 	});
 }

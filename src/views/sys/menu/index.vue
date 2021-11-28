@@ -143,12 +143,16 @@ export default {
         },
         addClick() {
             this.action = 'add';
-            this.showDialog = true;
+			this.showDialog = true;
+			this.formItem = {
+				parentId: this.parentId,
+				sort: 0,
+				isHide: false
+			};
             let formComponent = this.$refs['formItem'];
             if(formComponent) {
                 formComponent.resetFields();
             }
-            console.log(formComponent)
         },
         editClick(item) {
             this.action = 'update';
