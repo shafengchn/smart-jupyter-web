@@ -2,7 +2,8 @@ import _axios from 'axios'
 import config from '@/config/config'
 import { ElMessage } from 'element-plus'
 import { getToken, setToken } from '@/common/utils/TokenUtil'
-import router,{ LOGIN_PAGE_NAME } from '@/router'
+import router,{ LOGIN_PAGE_NAME } from '@/router';
+import ResponseCodes from "@/common/enums/ReponseCode.js";
 
 const baseUrl = process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro
 class HttpRequest {
@@ -29,10 +30,10 @@ class HttpRequest {
 
         // 响应拦截
         instance.interceptors.response.use(res => {
-            const { data } = res
-            if (data.code === 0) {
+			const { data } = res
+            if (data.code === ResponseCodes.SUCCESS) {
                 return data
-            } else if (data.code === -1) {
+            } else if ([...Object.values(ResponseCodes)].contains(data.code)) {
                 if (data.msg && data.msg != '') {
                     ElMessage.error({
                         message: data.msg,
@@ -46,19 +47,22 @@ class HttpRequest {
                 return Promise.reject(data)
             }
         }, error => {
-            const { status, data } = error.response
-            if (status === 401) {
-                ElMessage.warning({
-                    message: '您当前的会话已超时，请重新登录',
-                    duration: 4000
-                });
-                setToken("", 0);
-                console.log(router)
-                router.replace({ name: LOGIN_PAGE_NAME });
-            } else {
-				ElMessage.error('服务器连接失败！')
+			if (!error.response) {
+				const errmsg = '服务器连接失败！';
+				ElMessage.error(errmsg);
+				return Promise.reject(errmsg);
 			}
-            return Promise.reject(data)
+			const { status, data } = error.response
+			if (status === 401) {
+				ElMessage.warning({
+					message: '您当前的会话已超时，请重新登录',
+					duration: 4000
+				});
+				setToken("", 0);
+				console.log(router)
+				router.replace({ name: LOGIN_PAGE_NAME });
+			}
+			return Promise.reject(data)
         })
     }
     request(options) {

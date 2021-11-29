@@ -14,12 +14,10 @@
                     </el-popconfirm>
                 </template>
             </el-table-column>
-            <el-table-column width="30">
-                <template #default>
-                    <el-icon size="small">
-                        <i-arrow-right></i-arrow-right>
-                    </el-icon>
-                </template>
+            <el-table-column width="40">
+				<el-icon size="small">
+					<i-arrow-right></i-arrow-right>
+				</el-icon>
             </el-table-column>
         </el-table>
         <el-dialog v-model="showDialog" center :title="action=='add'?'新增':'修改'">
@@ -52,7 +50,7 @@ export default {
                 groupName:'',
             },
             rules: {
-                groupName: [ { require: true, message: '角色名不能为空' } ]
+                groupName: [ { required: true, message: '角色名不能为空' } ]
             },
             curRow: null,
         }

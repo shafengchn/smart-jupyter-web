@@ -109,7 +109,6 @@ export default {
 			joinOrLeaveGroupByUserIds(this.groupInfo.id, data).before(()=>{
 				this.loading = false;
 			}).then(res=>{
-				console.log('ok');
 			}).catch(err=>{
 				console.error(err);
 			})

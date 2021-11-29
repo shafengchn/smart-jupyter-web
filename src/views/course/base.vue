@@ -14,6 +14,11 @@
 						<el-link v-if="row.docUrl" type="primary" target="_blank" :href="row.docUrl">立即查看</el-link>
 					</template>
 				</el-table-column>
+                <el-table-column label="默认文件">
+					<template #default="{row}">
+						<el-link v-if="row.defaultZipName" type="primary" target="_blank" :href="$config.downloadUrl+row.defaultZipId">{{ row.defaultZipName }}</el-link>
+					</template>
+				</el-table-column>
                 <el-table-column prop="createTime" label="创建时间"></el-table-column>
 				<el-table-column label="操作" width="180">
                     <template #default="{ row }">
@@ -39,15 +44,17 @@
                     <el-input v-model="formItem.docUrl" maxlength="255"></el-input>
                 </el-form-item>
                 <el-form-item label="默认文件">
-                    <el-upload ref="upload" :auto-upload="false" accept=".zip" :limit="1" action=" ">
+                    <el-upload ref="upload" :auto-upload="false" accept=".zip" :limit="1" :show-file-list="false" :on-change="fileChange" :before-remove="fileRemove" action=" ">
 						<template #trigger>
 							<el-button size="small" type="primary">选择文件</el-button>
 						</template>
 						<div></div>
 						<template #tip>
-							仅支持zip压缩文件，此压缩文件会自动解压至用户工作目录
+							仅支持zip压缩文件，此压缩文件会自动解压至用户工作目录<br/>
 						</template>
 					</el-upload>
+					<span v-if="formItem.file.name">已选择文件“{{formItem.file.name}}”</span>
+					<span v-else-if="formItem.defaultZipName">已上传文件“{{formItem.defaultZipName}}”</span>
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -60,6 +67,7 @@
 
 <script>
 import { listAllCourse, saveOrUpdateCourse, removeCourseById } from "@/api/course/course";
+import { toFormData } from "@/common/utils/FileUtil";
 
 export default {
     data() {
@@ -73,10 +81,12 @@ export default {
 				name: '',
 				containerId: '',
 				docUrl: '',
+				defaultZipName: '',
 				createTime:'',
-            },
+				file: {},
+			},
             rules: {
-                name: [ { require: true, message: '名称不能为空', trigger: 'blur' } ],
+                name: [ { required: true, message: '名称不能为空', trigger: 'blur' } ],
 			},
             saving: false,
         }
@@ -101,7 +111,7 @@ export default {
         addClick() {
             this.action = 'add';
 			this.showDialog = true;
-			this.formItem = {};
+			this.formItem = { file: {} };
             let formComponent = this.$refs['formItem'];
             if(formComponent) {
                 formComponent.resetFields();
@@ -109,14 +119,16 @@ export default {
 		},
         editClick(item) {
             this.action = 'update';
-            this.formItem = { ...item };
+            this.formItem = { ...item, file:{} };
             this.showDialog = true;
         },
         saveClick() {
+			console.log(this.formItem.fileList)
             this.$refs['formItem'].validate(valid=>{
                 if(valid) {
-                    this.saving = true;
-                    saveOrUpdateCourse(this.formItem).before(()=>{
+					this.saving = true;
+					let data = toFormData(this.formItem);
+                    saveOrUpdateCourse(data).before(()=>{
                         this.saving = false;
                     }).then(res=>{
                         this.$message.success('保存成功');
@@ -145,8 +157,12 @@ export default {
                 console.error(err);
             })
 		},
-		handleSizeChange() {},
-		handleCurrentChange() {},
+		fileChange(file, fileList) {
+			this.formItem.file = file.raw;
+		},
+		fileRemove(file, fileList) {
+			this.formItem.file = {};
+		},
     }
 }
 </script>

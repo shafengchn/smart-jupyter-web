@@ -11,14 +11,17 @@ export const listAllCourse = () => {
 }
 
 /**
- * 保存或更细课程
+ * 保存或更新课程
  * @param {课程数据} courseData 
  */
 export const saveOrUpdateCourse = courseData => {
 	return axios.request({
 		url: `/course`,
 		method: 'PUT',
-		data: courseData
+		data: courseData,
+		headers: {
+			contentType: 'mutipart/form-data'
+		}
 	})
 }
 
@@ -31,4 +34,27 @@ export const removeCourseById = courseId => {
 		url: `/course/${courseId}`,
 		method: 'DELETE'
 	});
+}
+
+/**
+ * 选择或取消选择课程
+ * @param {课程id} courseId 
+ * @param {用户：是否选择了该课程} relationData 
+ */
+export const selectOrUnselectCourseByUserIds = (courseId, relationData) => {
+	return axios.request({
+		url: `/course-user/select-or-unselect-course-by-user-ids/${courseId}`,
+		method: 'POST',
+		data: relationData
+	});
+}
+
+/**
+ * 获取当前用户的课程列表
+ */
+export const listMyCourses = () => {
+	return axios.request({
+		url: `/course/list-my`,
+		method: 'GET'
+	})
 }

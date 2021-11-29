@@ -10,5 +10,5 @@ let config = {
     pageSize: 10
 };
 
-config.previewUrl = `${process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro}/file/firmware/`;
+config.downloadUrl = `${process.env.NODE_ENV === 'development' ? config.baseUrl.dev : config.baseUrl.pro}/file/download/`;
 export default config;

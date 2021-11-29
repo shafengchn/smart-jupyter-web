@@ -10,6 +10,7 @@ import 'element-plus/dist/index.css'
 import * as ElIconModules from '@element-plus/icons';
 import { transElIconName } from "@/common/utils/IconUtil";
 import Config from "@/config/config";
+import ParamValues from "@/common/enums/ParamValue.js";
 
 
 const app = createApp(App)
@@ -26,6 +27,7 @@ for (let iconName in ElIconModules) {
 
 // 全局方法
 app.config.globalProperties.$config = Config;
+app.config.globalProperties.$ParamValues = ParamValues;
 app.config.globalProperties.$component = componentName => {
     return app._instance.appContext.components[componentName];
 };

@@ -99,9 +99,6 @@ export default {
             default: null,
         }
     },
-    components: {
-        TableExpand: require("./index.vue")
-    },
     data() {
         return {
             showDialog: false,
@@ -121,8 +118,8 @@ export default {
                 sort: 0
             },
             rules: {
-                title: [ { require: true, message: '标题不能为空', trigger: 'blur' } ],
-                name: [ { require: true, message: '名称不能为空', trigger: 'blur' } ],
+                title: [ { required: true, message: '标题不能为空', trigger: 'blur' } ],
+                name: [ { required: true, message: '名称不能为空', trigger: 'blur' } ],
             },
             saving: false,
         }

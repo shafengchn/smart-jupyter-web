@@ -82,9 +82,9 @@ export default {
 				createTime:'',
             },
             rules: {
-                account: [ { require: true, message: '账户名不能为空', trigger: 'blur' } ],
-                password: [ { require: true, message: '密码不能为空', trigger: 'blur' } ],
-                name: [ { require: true, message: '姓名不能为空', trigger: 'blur' } ],
+                account: [ { required: true, message: '账户名不能为空', trigger: 'blur' } ],
+                password: [ { required: true, message: '密码不能为空', trigger: 'blur' } ],
+                name: [ { required: true, message: '姓名不能为空', trigger: 'blur' } ],
 			},
 			page: {
                 current: 1,
