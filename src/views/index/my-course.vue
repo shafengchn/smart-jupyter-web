@@ -18,12 +18,15 @@
 
 <script>
 import { listMyCourses } from "@/api/course/course";
+import { getContainerStatus } from "@/api/deploy/deploy";
+import DeployStatus from "@/common/enums/DeployStatus";
 
 export default {
 	data() {
 		return {
 			loading: false,
 			courses: [],
+			courseIningText: '',
 		}
 	},
 	mounted() {
@@ -38,6 +41,19 @@ export default {
 				this.courses = res.data;
 			}).catch(err=>{
 				console.error(err);
+			})
+		},
+		clickCourse(item) {
+			this.courseIningText = '获取课程状态中...';
+			// 获取课程容器状态
+			getContainerStatus(item.id).then(res=>{
+				if(res.data == DeployStatus.DEPLOY_SUCCESS) {
+					this.courseIningText = '获取用户信息中';
+					// 检查用户是否新建
+					return 
+				}
+			}).catch(err=>{
+				this.courseIningText = '';
 			})
 		}
 	}
