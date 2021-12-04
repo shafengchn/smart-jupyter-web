@@ -38,9 +38,6 @@
 					<el-form-item prop="dockerServicePort" label="Docker服务端口">
 						<el-input-number v-model="formItem.dockerServicePort" size="small"></el-input-number>
 					</el-form-item>
-					<el-form-item prop="dockerRepoUrl" label="Docker仓库地址">
-						<el-input v-model="formItem.dockerRepoUrl" :maxlength="50" style="width:300px;" placeholder="https://index.docker.io/v1/"></el-input>
-					</el-form-item>
 					<el-form-item prop="dockerRepoType" label="Docker仓库类型">
 						<el-radio-group v-model="formItem.dockerRepoType" size="small">
 							<el-radio-button v-for="(item, index) in dockerRepoTypes" :key="index" :label="item.paramValue">{{item.paramName}}</el-radio-button>
@@ -54,6 +51,9 @@
 							<el-input v-model="formItem.dockerPassword" show-password :maxlength="50" style="width:300px;"></el-input>
 						</el-form-item>
 					</template>
+					<el-form-item prop="dockerRepoUrl" label="仓库地址">
+						<el-input v-model="formItem.dockerRepoUrl" :maxlength="50" style="width:300px;" placeholder="https://index.docker.io/v1/"></el-input>
+					</el-form-item>
 				</template>
 				<el-button type="primary" v-loading="saving" @click="saveClick">保存</el-button>
 			</el-form>

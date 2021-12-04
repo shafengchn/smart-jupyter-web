@@ -40,6 +40,9 @@
                 <el-form-item label="容器id" prop="containerId">
                     <el-input v-model="formItem.containerId" maxlength="255"></el-input>
                 </el-form-item>
+                <el-form-item label="端口号" prop="port">
+                    <el-input-number v-model="formItem.port"></el-input-number>
+                </el-form-item>
                 <el-form-item label="文档链接" prop="docUrl">
                     <el-input v-model="formItem.docUrl" maxlength="255"></el-input>
                 </el-form-item>
@@ -79,6 +82,7 @@ export default {
             formItem: {
                 id:'',
 				name: '',
+                port: 80,
 				containerId: '',
 				docUrl: '',
 				defaultZipName: '',
@@ -111,7 +115,7 @@ export default {
         addClick() {
             this.action = 'add';
 			this.showDialog = true;
-			this.formItem = { file: {} };
+			this.formItem = { file: {}, port: 80 };
             let formComponent = this.$refs['formItem'];
             if(formComponent) {
                 formComponent.resetFields();
