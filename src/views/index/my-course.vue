@@ -2,12 +2,12 @@
 	<div>
 		<el-card shadow="never">
 			<template #header>
-				我的课程
+				我的课程 {{courseIningText}}
 			</template>
 			<div class="container-center">
 				<ul style="list-style: none;">
 					<li v-for="(item, index) in courses" :key="index">
-						<el-link>{{item.name}}</el-link>
+						<el-link @click="clickCourse(item)">{{item.name}}</el-link>
 					</li>
 				</ul>
 			</div>
@@ -18,7 +18,7 @@
 
 <script>
 import { listMyCourses } from "@/api/course/course";
-import { getContainerStatus } from "@/api/deploy/deploy";
+import { getContainerStatus, getJupyterUserStatus, createJupyterUser } from "@/api/deploy/deploy";
 import DeployStatus from "@/common/enums/DeployStatus";
 
 export default {
@@ -47,11 +47,29 @@ export default {
 			this.courseIningText = '获取课程状态中...';
 			// 获取课程容器状态
 			getContainerStatus(item.id).then(res=>{
-				if(res.data == DeployStatus.DEPLOY_SUCCESS) {
+				if(res.data == DeployStatus.CONTAINER_DEPLOY_SUCCESS) {
+					// 检查用户状态
 					this.courseIningText = '获取用户信息中';
-					// 检查用户是否新建
-					return 
+					return getJupyterUserStatus(item.id);
+				} else if (res.data == DeployStatus.CONTAINER_NOT_DEPLOY) {
+					// 未部署
+					this.$message.warning("容器尚未部署，请联系管理员");
+					return Promise.reject(res.data);
+				} else {
+					// 其他状态
+					return Promise.reject(res.data);
 				}
+				
+			}).then(res=>{
+				if (res.data !== DeployStatus.USER_DEPLOY_SUCCESS) {
+					this.courseIningText = '用户部署中...';
+					// 用户尚未部署，或没有部署成功
+					return createJupyterUser(item.id);
+				} else {
+					return Promise.resolve({code: 0});
+				}
+			}).then(res=>{
+				alert("打开连接。。。")
 			}).catch(err=>{
 				this.courseIningText = '';
 			})

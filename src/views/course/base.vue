@@ -8,7 +8,27 @@
 			</el-row>
             <el-table v-loading="loading" :data="tableData" stripe size="small">
                 <el-table-column prop="name" label="课程名"></el-table-column>
-                <el-table-column prop="containerId" label="容器id"></el-table-column>
+                <el-table-column label="容器名称">
+                    <template #default="{ row }">
+                        <el-popover v-if="row.containerId && row.containerId.length" placement="top" title="容器信息" :width="400" trigger="hover">
+                            <el-form size="mini" label-width="100px" >
+                                <el-form-item label="id">
+                                    <div class="__line" style="width:250px">{{row.containerId}}</div>
+                                </el-form-item>
+                                <el-form-item label="容器名称">
+                                    {{row.containerName}}
+                                </el-form-item>
+                            </el-form>
+                            <div class="__flex-end">
+                                <el-button size="mini" type="danger" v-loading="deploing" @click="clickReDeploy(row)">重新部署</el-button>
+                            </div>
+                            <template #reference>
+                                <span class="__line" style="width:200px">{{row.containerName}}</span>
+                            </template>
+                        </el-popover>
+                        <el-button v-else size="mini" type="success" v-loading="deploing" @click="clickStartDeploy(row)">立即部署</el-button>
+                    </template>
+                </el-table-column>
                 <el-table-column label="文档地址">
 					<template #default="{row}">
 						<el-link v-if="row.docUrl" type="primary" target="_blank" :href="row.docUrl">立即查看</el-link>
@@ -47,13 +67,13 @@
                     <el-input v-model="formItem.docUrl" maxlength="255"></el-input>
                 </el-form-item>
                 <el-form-item label="默认文件">
-                    <el-upload ref="upload" :auto-upload="false" accept=".zip" :limit="1" :show-file-list="false" :on-change="fileChange" :before-remove="fileRemove" action=" ">
+                    <el-upload ref="upload" :auto-upload="false" accept=".tar" :limit="1" :show-file-list="false" :on-change="fileChange" :before-remove="fileRemove" action=" ">
 						<template #trigger>
 							<el-button size="small" type="primary">选择文件</el-button>
 						</template>
 						<div></div>
 						<template #tip>
-							仅支持zip压缩文件，此压缩文件会自动解压至用户工作目录<br/>
+							仅支持tar压缩文件，此压缩文件会自动解压至用户工作目录<br/>
 						</template>
 					</el-upload>
 					<span v-if="formItem.file.name">已选择文件“{{formItem.file.name}}”</span>
@@ -70,6 +90,7 @@
 
 <script>
 import { listAllCourse, saveOrUpdateCourse, removeCourseById } from "@/api/course/course";
+import { getContainerStatus, deployCourseContainer, removeCourseContainer } from "@/api/deploy/deploy";
 import { toFormData } from "@/common/utils/FileUtil";
 
 export default {
@@ -78,6 +99,7 @@ export default {
             showDialog: false,
             action: 'add',
             loading: false,
+            deploing: false,
             tableData:[],
             formItem: {
                 id:'',
@@ -127,7 +149,6 @@ export default {
             this.showDialog = true;
         },
         saveClick() {
-			console.log(this.formItem.fileList)
             this.$refs['formItem'].validate(valid=>{
                 if(valid) {
 					this.saving = true;
@@ -167,6 +188,30 @@ export default {
 		fileRemove(file, fileList) {
 			this.formItem.file = {};
 		},
+        clickStartDeploy(item) {
+            this.deploing = true;
+            deployCourseContainer(item.id).before(()=>{
+                this.deploing = false;
+            }).then(res=>{
+                this.$message.success("部署成功");
+                this.loadData();
+            }).catch(err=>{
+                console.error(err);
+            })
+        },
+        clickReDeploy(item) {
+            this.deploing = true;
+            removeCourseContainer(item.id, true).then(res=>{
+                return deployCourseContainer(item.id);
+            }).before(()=>{
+                this.deploing = false;
+            }).then(res=>{
+                this.$message.success("部署成功");
+                this.loadData();
+            }).catch(err=> {
+                console.error(err);
+            })
+        }
     }
 }
 </script>

@@ -20,7 +20,17 @@ body {
   justify-content: center;
   align-items: center;
 }
+.__flex-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
 .__flex-row {
   flex-direction: row;
+}
+.__line {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap
 }
 </style>
