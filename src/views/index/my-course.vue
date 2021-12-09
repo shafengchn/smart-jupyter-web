@@ -20,6 +20,7 @@
 import { listMyCourses } from "@/api/course/course";
 import { getContainerStatus, getJupyterUserStatus, createJupyterUser } from "@/api/deploy/deploy";
 import DeployStatus from "@/common/enums/DeployStatus";
+import store from "@/store/index";
 
 export default {
 	data() {
@@ -69,8 +70,10 @@ export default {
 					return Promise.resolve({code: 0});
 				}
 			}).then(res=>{
-				alert("打开连接。。。")
+				let serverIP = process.env.NODE_ENV == "development" ? this.$config.jupyterProxyServerIp.dev : this.$config.jupyterProxyServerIp.pro;
+				window.open(`http://${window.location.host}/proxy/${serverIP}/${item.port}/${this.$store.getters.userInfo.account}`,"_blank");
 			}).catch(err=>{
+				console.error(err);
 				this.courseIningText = '';
 			})
 		}

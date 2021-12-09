@@ -29,7 +29,8 @@ for (let iconName in ElIconModules) {
 app.config.globalProperties.$config = Config;
 app.config.globalProperties.$ParamValues = ParamValues;
 app.config.globalProperties.$component = componentName => {
-    return app._instance.appContext.components[componentName];
+    let instance = app._instance == null ? app._context : app._instance.appContext;
+    return instance.components[componentName];
 };
 
 

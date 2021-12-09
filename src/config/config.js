@@ -1,7 +1,11 @@
 let config = {
     baseUrl: {
         dev: 'http://127.0.0.1:30185',//http://localhost:30085
-        pro: 'http://cloud.sinoaopt.com:30085'//'http://jfapi.bmwfw.xyz'
+        pro: `http://${window.location.host}/api` //'http://jfapi.bmwfw.xyz'
+    },
+    jupyterProxyServerIp: {
+        dev: '127.0.0.1',
+        pro: '10.254.1.201'
     },
    /**
     * @description 默认打开的首页的路由name值，默认为home
