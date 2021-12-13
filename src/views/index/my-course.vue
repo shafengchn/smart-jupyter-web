@@ -70,8 +70,10 @@ export default {
 					return Promise.resolve({code: 0});
 				}
 			}).then(res=>{
+				this.courseIningText = '正在跳转';
 				let serverIP = process.env.NODE_ENV == "development" ? this.$config.jupyterProxyServerIp.dev : this.$config.jupyterProxyServerIp.pro;
 				window.open(`http://${window.location.host}/proxy/${serverIP}/${item.port}/${this.$store.getters.userInfo.account}`,"_blank");
+				this.courseIningText = '';
 			}).catch(err=>{
 				console.error(err);
 				this.courseIningText = '';
