@@ -71,8 +71,12 @@ export default {
 				}
 			}).then(res=>{
 				this.courseIningText = '正在跳转';
-				let serverIP = process.env.NODE_ENV == "development" ? this.$config.jupyterProxyServerIp.dev : this.$config.jupyterProxyServerIp.pro;
-				window.open(`http://${window.location.host}/proxy/${serverIP}/${item.port}/${this.$store.getters.userInfo.account}`,"_blank");
+				if(process.env.NODE_ENV == 'development') {
+					window.open(`http://127.0.0.1:8080/proxy/${this.$config.jupyterProxyServerIp.dev}/${item.port}/${this.$store.getters.userInfo.account}`,"_blank");
+				} else {
+					window.open(`http://${window.location.host}/proxy/${this.$config.jupyterProxyServerIp.pro}/${item.port}/${this.$store.getters.userInfo.account}`,"_blank");
+				}
+				
 				this.courseIningText = '';
 			}).catch(err=>{
 				console.error(err);

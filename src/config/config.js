@@ -4,7 +4,7 @@ let config = {
         pro: `http://${window.location.host}/api` //'http://jfapi.bmwfw.xyz'
     },
     jupyterProxyServerIp: {
-        dev: '127.0.0.1',
+        dev: '192.168.10.3',
         pro: '10.254.1.201'
     },
    /**
